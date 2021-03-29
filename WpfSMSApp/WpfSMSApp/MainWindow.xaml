@@ -12,9 +12,19 @@
         mc:Ignorable="d"
         Title="Stock Management System" Height="700" Width="1200" 
         Icon="Resources/stock.png" 
-        ContentRendered="MetroWindow_ContentRendered">
+        ContentRendered="MetroWindow_ContentRendered"
+        Activated="MetroWindow_Activated">
     <!-- ContentRendered : 창의 콘텐츠가 렌더링된 후에 발생합니다. -->
     <!-- Loaded : 요소를 배치하고 렌더링하여 상호 작용할 준비가 되면 발생합니다. -->
+    <!-- Activated :창이 ForeGround 창이 되면 발생합니다. -->
+    
+    <!-- 우측 상단 윈도우 커맨드 쪽 로그인 이메일(이름) 표시용 더미 버튼 -->
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button 
+                x:Name="BtnLoginedId" />
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
     
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="70">
@@ -171,7 +181,8 @@
                 FontSize="14" Foreground="White"
                 Background="CornflowerBlue"
                 Margin="5, 10"
-                Content="계정">
+                Content="계정"
+                Click="BtnAccount_Click">
                 <!-- 내용을 표시 하는 데 사용 하는 데이터 템플릿을 가져오거나 설정 합니다. -->
                 <Button.ContentTemplate>
                     <!-- 데이터 개체의 시각적 구조를 설명합니다. -->
@@ -193,7 +204,8 @@
                 FontSize="14" Foreground="White"
                 Background="Gray"
                 Margin="5, 10"
-                Content="로그아웃">
+                Content="로그아웃"
+                Click="BtnLogOut_Click">
                 <!-- 내용을 표시 하는 데 사용 하는 데이터 템플릿을 가져오거나 설정 합니다. -->
                 <Button.ContentTemplate>
                     <!-- 데이터 개체의 시각적 구조를 설명합니다. -->
@@ -213,7 +225,7 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid Background="WhiteSmoke">
                 <!-- 화면 전환 부분 -->
-                <ContentControl x:Name="ActiveControl"/>
+                <Frame x:Name="ActiveControl"/>
             </Grid>
         </Grid>
     </DockPanel>

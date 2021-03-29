@@ -34,7 +34,10 @@ namespace WpfSMSApp.View
             MessageDialogResult result = await this.ShowMessageAsync("종료", "프로그램을 종료할까요?", MessageDialogStyle.AffirmativeAndNegative, null);
 
             if (result == MessageDialogResult.Affirmative)
+            {
+                Commons.LOGGER.Info("프로그램 종료");
                 Application.Current.Shutdown(); // 응용 프로그램을 종료합니다.
+            }
 
         }
 
@@ -64,7 +67,7 @@ namespace WpfSMSApp.View
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             LblResult.Visibility = Visibility.Hidden;
-
+            
             if (string.IsNullOrEmpty(TxtUserEmail.Text) || string.IsNullOrEmpty(TxtPassword.Password))
             {
                 LblResult.Visibility = Visibility.Visible;
