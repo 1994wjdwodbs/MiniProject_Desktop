@@ -13,6 +13,7 @@
         Title="Stock Management System" Height="700" Width="1200" 
         Icon="Resources/stock.png" 
         ContentRendered="MetroWindow_ContentRendered">
+    <!-- ContentRendered : 창의 콘텐츠가 렌더링된 후에 발생합니다. -->
     <!-- Loaded : 요소를 배치하고 렌더링하여 상호 작용할 준비가 되면 발생합니다. -->
     
     <DockPanel>

@@ -10,21 +10,86 @@
         xmlns:iconpacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
         xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks.ForkAwesome"
         mc:Ignorable="d"
-        Title="Login" Height="400" Width="350">
+        Title="Login" Height="300" Width="400" 
+        ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False"
+        Loaded="MetroWindow_Loaded">
 
     <Grid>
-        <!-- 행 수 : 4개 -->
+        <!-- 행 수 : 5개 -->
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <Button 
-            Grid.Row="2" 
-            Content="로그인" 
-            Width="100" Margin="5" 
-            Background="SkyBlue" Foreground="White"/>
+        <!-- 아이디(이메일), 패스워드 부분 -->
+        <TextBox 
+            x:Name="TxtUserEmail"
+            Grid.Row="1"
+            FontSize="14"
+            Margin="10"
+            mah:TextBoxHelper.Watermark="UserEmail..."
+            KeyDown="TxtUserEmail_KeyDown"/>
+        <PasswordBox 
+            x:Name="TxtPassword"
+            Grid.Row="2"
+            FontSize="14"
+            Margin="10"
+            mah:TextBoxHelper.Watermark="Password..."
+            KeyDown="TxtPassword_KeyDown"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button 
+                x:Name="BtnLogin"
+                Content="로그인" 
+                Width="100" Height="50" Margin="5"
+                Background="RoyalBlue" Foreground="White"
+                Click="BtnLogin_Click">
+                <Button.ContentTemplate>
+                    <!-- 데이터 개체의 시각적 구조를 설명합니다. -->
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <!-- 바인딩 방법 3가지 -->
+                            <!--<TextBlock Text="{Binding Content, Source={x:Reference BtnBooks}}" Margin="20, 0"/>-->
+                            <!--<TextBlock Text="{Binding Path=Content, ElementName=BtnBooks}" Margin="20, 0"/>-->
+                            <TextBlock Text="{Binding}" Margin="5, 0" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/unlock.png" Width="24px" Height="24px" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+
+            <Button 
+                x:Name="BtnCancel"
+                Content="취소" 
+                Width="100" Height="50" Margin="5"
+                Background="AliceBlue" Foreground="DarkSlateBlue"
+                Click="BtnCancel_Click">
+                <Button.ContentTemplate>
+                    <!-- 데이터 개체의 시각적 구조를 설명합니다. -->
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <!-- 바인딩 방법 3가지 -->
+                            <!--<TextBlock Text="{Binding Content, Source={x:Reference BtnBooks}}" Margin="20, 0"/>-->
+                            <!--<TextBlock Text="{Binding Path=Content, ElementName=BtnBooks}" Margin="20, 0"/>-->
+                            <TextBlock Text="{Binding}" Margin="5, 0" VerticalAlignment="Center"/>
+                            <Image Source="/Resources/bansign.png" Width="24px" Height="24px" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </StackPanel>
+
+        <Label
+            x:Name="LblResult"
+            Grid.Row="4"
+            Content="Result"
+            Foreground="OrangeRed"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            />
+
     </Grid>
 </mah:MetroWindow>

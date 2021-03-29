@@ -33,6 +33,8 @@ namespace WpfSMSApp
             view.Owner = this;
             view.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             view.ShowDialog();
+            // this.BtnBooks;
+            // BtnBooks : MainWindow.BtnBooks (xaml)
         }
     }
 }
