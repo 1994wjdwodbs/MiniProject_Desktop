@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace WpfSMSApp.Logic
 {
     public class DataAccess
     {
-
+        // 회원 정보 가져오기
         public static List<User> GetUsers()
         {
             List<User> users;
@@ -20,6 +21,17 @@ namespace WpfSMSApp.Logic
             }
 
             return users;
+        }
+
+        // 회원 정보 수정하기
+        public static int SetUser(User user)
+        {
+            using (var ctx = new SMSEntities())
+            {
+                // System.Data.Entity.Migrations.AddOrUpdate는 바뀐 내용이 없으면 Update하지 않는다!!
+                ctx.User.AddOrUpdate(user);
+                return ctx.SaveChanges();
+            }
         }
     }
 }

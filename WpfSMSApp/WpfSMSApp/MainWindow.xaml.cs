@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using WpfSMSApp.Helper;
 using WpfSMSApp.View;
 using WpfSMSApp.View.Account;
+using WpfSMSApp.View.User_;
 
 namespace WpfSMSApp
 {
@@ -45,6 +46,8 @@ namespace WpfSMSApp
 
         private async void BtnLogOut_Click(object sender, EventArgs e)
         {
+            // TODO : 모든 화면 해제 && 첫 화면으로 돌려놓음
+
             var result = await this.ShowMessageAsync("로그아웃", "로그아웃하시겠습니까?", 
                 MessageDialogStyle.AffirmativeAndNegative, null);
 
@@ -72,6 +75,20 @@ namespace WpfSMSApp
             catch(Exception ex)
             {
                 Commons.LOGGER.Error($"예외발생 BtnAccount_Click : {ex}");
+                this.ShowMessageAsync("예외", $"예외발생 : {ex}");
+            }
+        }
+
+        private void BtnUser_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ActiveControl.Content = new UserList();
+            }
+            catch(Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 BtnUser_Click : {ex}");
+                this.ShowMessageAsync("예외", $"예외발생 : {ex}");
             }
         }
     }

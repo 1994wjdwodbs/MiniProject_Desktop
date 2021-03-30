@@ -159,7 +159,8 @@
                 FontSize="14" Foreground="White"
                 Background="LightSteelBlue"
                 Margin="5, 10"
-                Content="사용자">
+                Content="사용자"
+                Click="BtnUser_Click">
                 <!-- 내용을 표시 하는 데 사용 하는 데이터 템플릿을 가져오거나 설정 합니다. -->
                 <Button.ContentTemplate>
                     <!-- 데이터 개체의 시각적 구조를 설명합니다. -->
@@ -225,7 +226,7 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid Background="WhiteSmoke">
                 <!-- 화면 전환 부분 -->
-                <Frame x:Name="ActiveControl"/>
+                <Frame x:Name="ActiveControl" NavigationUIVisibility="Hidden"/>
             </Grid>
         </Grid>
     </DockPanel>

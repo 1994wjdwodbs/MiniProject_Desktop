@@ -26,7 +26,7 @@ namespace WpfSMSApp.View.Account
             InitializeComponent();
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace WpfSMSApp.View.Account
 
         private void BtnEditMyAccount_Click(object sender, RoutedEventArgs e)
         {
-
+            NavigationService.Navigate(new EditAccount());
         }
     }
 }
