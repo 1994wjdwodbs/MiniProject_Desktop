@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WpfSMSApp.View.User_"
+      xmlns:local="clr-namespace:WpfSMSApp.View.User_" 
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       mc:Ignorable="d" 
       d:DesignHeight="630" d:DesignWidth="1200"
       Title="계정 리스트"
@@ -80,10 +81,18 @@
             <Button 
                 x:Name="BtnExportPdf"
                 Content="PDF 익스포트" 
-                Foreground="White"
+                Foreground="Black"
                 Height="50" Width="200" Margin="5, 10"
-                Background="DarkSlateGray"
+                Background="Silver"
                 Click="BtnExportPdf_Click">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}" Margin="20, 0" VerticalAlignment="Center" />
+                            <iconPacks:PackIconCodicons Kind="FilePDF" Width="24" Height="24" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
             </Button>
 
         </StackPanel>
