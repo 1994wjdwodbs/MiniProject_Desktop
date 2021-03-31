@@ -1,10 +1,14 @@
-﻿using NLog;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfSMSApp.Model;
 
 namespace WpfSMSApp.Helper
@@ -18,6 +22,7 @@ namespace WpfSMSApp.Helper
         // 로그인 유저 정보
         public static User LOGINED_USER;
 
+        // 패스워드 해시(MD5)
         public static string GetMD5Hash(MD5 md5Hash, string plainStr)
         {
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(plainStr));
@@ -28,6 +33,21 @@ namespace WpfSMSApp.Helper
             }
 
             return builder.ToString();
+        }
+
+        // 이메일 정규식 확인
+        public static bool IsValidEmail(string email)
+        {
+            bool valid = Regex.IsMatch(email, @"[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?");
+
+            return valid;
+        }
+
+        public static async Task<MessageDialogResult> ShowMessageAsync(
+            string title, string message,
+            MessageDialogStyle style = MessageDialogStyle.Affirmative)
+        {
+            return await (Application.Current.MainWindow as MetroWindow).ShowMessageAsync(title, message, style);
         }
     }
 }
