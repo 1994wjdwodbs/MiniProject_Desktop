@@ -108,7 +108,7 @@ namespace WpfSMSApp.View.User_
                 }
                 catch (Exception ex)
                 {
-                    // Commons.LOGGER.Error($"예외발생 : {ex}");
+                    Commons.LOGGER.Error($"예외발생 BtnDeactive_Click : {ex}");
                 }
             }
         }

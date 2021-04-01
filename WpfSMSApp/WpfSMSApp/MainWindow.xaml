@@ -113,7 +113,8 @@
                 FontSize="14" Foreground="White"
                 Background="CadetBlue"
                 Margin="5, 10"
-                Content="창고">
+                Content="창고"
+                Click="BtnStore_Click">
                 <!-- 내용을 표시 하는 데 사용 하는 데이터 템플릿을 가져오거나 설정 합니다. -->
                 <Button.ContentTemplate>
                     <!-- 데이터 개체의 시각적 구조를 설명합니다. -->

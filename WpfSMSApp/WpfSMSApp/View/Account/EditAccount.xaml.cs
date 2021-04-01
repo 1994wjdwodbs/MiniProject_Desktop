@@ -153,7 +153,7 @@ namespace WpfSMSApp.View.Account
                 }
                 catch(Exception ex)
                 {
-                    // Commons.LOGGER.Error($"예외발생 : {ex}");
+                    Commons.LOGGER.Error($"예외발생 BtnUpdate_Click : {ex}");
                 }
             }
         }
