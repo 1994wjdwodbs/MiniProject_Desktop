@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -51,5 +52,19 @@ namespace NaverMovieFinderApp.Helper
             return result;
         }
 
+        // 태그 제거 메소드
+        public static string StripHtmlTag(string text)
+        {
+            return Regex.Replace(text, @"<(.|\n)*?>", "");
+        }
+
+        // 파이프 제거 메소드
+        public static string StripPipe(string text)
+        {
+            if (text.Length == 0)
+                return text;
+
+            return text.Remove(text.Length - 1, 1).Replace("|", ", ");
+        }
     }
 }
