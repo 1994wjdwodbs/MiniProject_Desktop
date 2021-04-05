@@ -2,14 +2,14 @@
 미니프로젝트 데스크탑앱(ERP 재고관리)
 
 ------------------------
-## 📕WpfMiniProject
+## 🎦WpfMiniProject
 
 ### Open API를 이용한 Movie Finder
 [Movie_Finder_API](WpfMiniProject)
 
 
 ------------------------
-## 📙WpfSMSApp
+## 📑WpfSMSApp
 
 ### WPF를 이용한 ERP Program
 [ERP Program](WpfSMSApp)
