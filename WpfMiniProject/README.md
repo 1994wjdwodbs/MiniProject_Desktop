@@ -36,7 +36,7 @@
 >     
 >           
 >     
->>![결과7](images/NaverMovieFinderApp_6.jpg)  
+>>![결과7](images/NaverMovieFinderApp_6.jpg)
 >>__- 선택된 영화 링크 홈페이지(네이버무비) 열기__
 >     
 >           
