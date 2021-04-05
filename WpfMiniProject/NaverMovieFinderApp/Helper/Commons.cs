@@ -15,6 +15,11 @@ namespace NaverMovieFinderApp.Helper
 {
     class Commons
     {
+        // 즐겨찾기 여부 플래그
+        public static bool IsFavorite = false;
+        // 즐겨찾기 삭제와 보기 플래그
+        public static bool IsDelete = false;
+
         // NLog 정적객체
         public static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
 
