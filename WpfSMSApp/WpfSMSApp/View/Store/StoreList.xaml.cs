@@ -1,6 +1,9 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.Win32;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,14 +40,12 @@ namespace WpfSMSApp.View.Store
                 // TODO : Store 데이터를 읽어온다.
                 List<Model.Store> stores = new List<Model.Store>();
                 List<Model.StockStore> stockStores = new List<Model.StockStore>();
-                List<Model.Stock> stocks = new List<Model.Stock>();
                 stores = Logic.DataAccess.GetStores();
-                stocks = Logic.DataAccess.GetStocks();
 
                 // stores 데이터를 stockStores로 옮김
                 foreach (Model.Store item in stores)
                 {
-                    stockStores.Add(new Model.StockStore()
+                    var store = new Model.StockStore()
                     {
                         StoreID = item.StoreID,
                         StoreName = item.StoreName,
@@ -53,12 +54,14 @@ namespace WpfSMSApp.View.Store
                         TagID = item.TagID,
                         BarcodeID = item.BarcodeID,
                         StockQuantity = 0
-                    });
+                    };
+
+                    store.StockQuantity = Logic.DataAccess.GetStocks().Where(t => t.StoreID.Equals(store.StoreID)).Count();
+
+                    stockStores.Add(store);
                 }
 
-
                 this.DataContext = stockStores;
-
             }
             catch (Exception ex)
             {
@@ -69,10 +72,9 @@ namespace WpfSMSApp.View.Store
 
         private void BtnAddStore_Click(object sender, RoutedEventArgs e)
         {
-           NavigationService.Navigate(new AddStore());
             try
             {
-
+                NavigationService.Navigate(new AddStore());
             }
             catch (Exception ex)
             {
@@ -83,10 +85,16 @@ namespace WpfSMSApp.View.Store
 
         private void BtnEditStore_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationService.Navigate(new EditStore());
+            if(GrdData.SelectedItem == null)
+            {
+                Commons.ShowMessageAsync("창고수정", "수정할 창고를 선택하세요");
+                return;
+            }
+
             try
             {
-
+                var storeId = (GrdData.SelectedItem as Model.Store).StoreID;
+                NavigationService.Navigate(new EditStore(storeId));
             }
             catch (Exception ex)
             {
@@ -99,107 +107,57 @@ namespace WpfSMSApp.View.Store
 
         private void BtnExportExcel_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "PDF File(*.pdf)|*.pdf";
-            saveDialog.FileName = "";
-            if(saveDialog.ShowDialog() == true)
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Excel File (*.xlsx)|*.xlsx"; // 엑셀 화장자
+            dialog.FileName = "";
+
+            if(dialog.ShowDialog() == true)
             {
-                // pdf 변환
                 try
                 {
-                    iTextSharp.text.Font font = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12);
-                    string pdfFilePath = saveDialog.FileName;
+                    IWorkbook workbook = new XSSFWorkbook(); // xlsx용
+                    ISheet sheet = workbook.CreateSheet("Sheet1"); // 이름변경 가능
 
-                    // #1 : pdf 객체 생성
-                    Document pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4);
-                    
-                    // #2 : pdf 폰트 설정(한글)
-                    // 폰트 경로
-                    string nanumPath = System.IO.Path.Combine(Environment.CurrentDirectory, @"NanumGothic.ttf");
-                    BaseFont nanumBase = BaseFont.CreateFont(nanumPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                    // 20pt 나눔폰트 (타이틀)
-                    Font nanumFont_Title = new iTextSharp.text.Font(nanumBase, 20f);
-                    // 12pt 나눔폰트 (본문)
-                    Font nanumFont_Content = new iTextSharp.text.Font(nanumBase, 12f);
+                    // 헤더 row
+                    IRow rowHeader = sheet.CreateRow(0);
+                    ICell cell = rowHeader.CreateCell(0);
+                    cell.SetCellValue("순번");
+                    cell = rowHeader.CreateCell(1);
+                    cell.SetCellValue("창고명");
+                    cell = rowHeader.CreateCell(2);
+                    cell.SetCellValue("창고위치");
+                    cell = rowHeader.CreateCell(3);
+                    cell.SetCellValue("재고수");
 
-                    iTextSharp.text.Paragraph title = new iTextSharp.text.Paragraph($"부경대 재고관리시스템(Stock Management System, SMS)", nanumFont_Title);
-                    iTextSharp.text.Paragraph subtitle = new iTextSharp.text.Paragraph($"exported : {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\n\n", nanumFont_Content);
-
-                    // #3 : pdf 내용 생성
-                    using (FileStream stream = new FileStream(pdfFilePath, FileMode.OpenOrCreate))
+                    // 액셀 내용
+                    for (int i = 0; i < GrdData.Items.Count; i++)
                     {
-                        PdfWriter.GetInstance(pdfDoc, stream);
-                        pdfDoc.Open();
-                        // #4 : #2 에서 만든 폰트 이용 -> 타이틀 생성
-                        pdfDoc.Add(title);
-                        pdfDoc.Add(subtitle);
+                        IRow row = sheet.CreateRow(i + 1);
+                        var stockStore = GrdData.Items[i] as StockStore;
 
-                        // #5 : pdf 테이블 생성
-                        PdfPTable pdfTable = new PdfPTable(GrdData.Columns.Count);
-                        // pdf 테이블 전체 사이즈 설정
-                        pdfTable.WidthPercentage = 100;
-                        // pdf 테이블 셀 사이즈 설정
-                        pdfTable.SetWidths(new float[] {7f,15f,10f,15f,28f,12f,10f});
-
-                        // #6 : pdf 테이블 Attribute=Col=Field 생성
-                        foreach (DataGridColumn col in GrdData.Columns)
-                        {
-                            PdfPCell cell = new PdfPCell(new Phrase(col.Header.ToString(), nanumFont_Content));
-                            cell.HorizontalAlignment = iTextSharp.text.Element.ALIGN_CENTER;
-                            pdfTable.AddCell(cell);
-                        }
-
-                        // #7 : pdf 테이블 Tuple=Row=Record 생성
-                        foreach (var item in GrdData.Items)
-                        {
-                            if (item is Model.User)
-                            {
-                                var temp = item as Model.User;
-                                PdfPCell cell = new PdfPCell(new Phrase(temp.UserID.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserIdentityNumber.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserSurname.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserName.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserEmail.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserAdmin.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-
-                                cell = new PdfPCell(new Phrase(temp.UserActivated.ToString(), nanumFont_Content));
-                                cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                                pdfTable.AddCell(cell);
-                            }
-                        }
-                        // pdf 테이블 추가
-                        pdfDoc.Add(pdfTable);
-
-                        pdfDoc.Close();
-                        stream.Close();
+                        ICell dataCell = row.CreateCell(0);
+                        dataCell.SetCellValue(stockStore.StoreID);
+                        dataCell = row.CreateCell(1);
+                        dataCell.SetCellValue(stockStore.StoreName);
+                        dataCell = row.CreateCell(2);
+                        dataCell.SetCellValue(stockStore.StoreLocation);
+                        dataCell = row.CreateCell(3);
+                        dataCell.SetCellValue(stockStore.StockQuantity);
                     }
 
-                    Commons.ShowMessageAsync("PDF변환", "PDF 익스포트 성공!");
+                    // 파일 저장
+                    using (var fs = new FileStream(dialog.FileName, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        workbook.Write(fs);
+                    }
+
+                    Commons.ShowMessageAsync("액셀저장", "액셀Export 성공!");
                 }
                 catch (Exception ex)
                 {
-                    Commons.LOGGER.Error($"예외발생 BtnExportPdf_Click : {ex}");
+                    Commons.ShowMessageAsync("예외", "예외발생 : {ex}");
                 }
             }
         }
-
-       
     }
 }

@@ -24,13 +24,22 @@ namespace WpfSMSApp.View.Store
     /// <summary>
     /// MyAccount.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class AddStore : Page
+    public partial class EditStore : Page
     {
         bool IsValid = true;
+        private int StoreID { get; set; }
+        // 수정할 창고 객체
+        private Model.Store CurrentStore { get; set; }
 
-        public AddStore()
+        public EditStore()
         {
             InitializeComponent();
+        }
+
+        // 추가 생성자 (StoreList에서 storeId를 받아옴)
+        public EditStore(int storeId) : this()
+        {
+            StoreID = storeId;
         }
 
         public void ChangeLabelsVisible(Visibility visible)
@@ -43,12 +52,26 @@ namespace WpfSMSApp.View.Store
         {
             LblStoreName.Visibility = LblStoreLocation.Visibility = Visibility.Hidden;
             TxtStoreID.Text = TxtStoreName.Text = TxtStoreLocation.Text = "";
+
+            // Store 테이블에서 내용을 읽음
+            try
+            {
+                // FirstOrDefault : 시퀀스의 첫 번째 요소를 반환하거나, 시퀀스에 요소가 없으면 기본값을 반환합니다.
+                CurrentStore = Logic.DataAccess.GetStores().Where(s => s.StoreID.Equals(StoreID)).FirstOrDefault();
+                TxtStoreID.Text = CurrentStore.StoreID.ToString();
+                TxtStoreName.Text = CurrentStore.StoreName;
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"EditStore.xaml.cs Page Loaded 예외발생 : {ex}");
+                Commons.ShowMessageAsync("예외", $"예외발생 : {ex}");
+            }
         }
 
         public bool IsValidInput()
         {
             // 모든 입력된 값이 만족하는지 유효성 검사 플래그
-
+            IsValid = true;
 
             LblStoreName.Visibility = LblStoreLocation.Visibility = Visibility.Hidden;
 
@@ -95,13 +118,13 @@ namespace WpfSMSApp.View.Store
             if (IsValidInput())
             {
                 // DB 입력처리
-                store.StoreName = TxtStoreName.Text;
-                store.StoreLocation = TxtStoreLocation.Text;
+                CurrentStore.StoreName = TxtStoreName.Text;
+                CurrentStore.StoreLocation = TxtStoreLocation.Text;
 
                 try
                 {
                     // SetUser -> System.Data.Entity.Migrations.AddOrUpdate는 바뀐 내용이 없으면 Update하지 않는다!!
-                    int result = Logic.DataAccess.SetStore(store);
+                    int result = Logic.DataAccess.SetStore(CurrentStore);
 
                     if (result == 0)
                     {
@@ -109,13 +132,13 @@ namespace WpfSMSApp.View.Store
                         // Application.Current.MainWindow : System.Windows.Application.MainWindow 와 같은 브라우저에서 호스팅되는 응용 프로그램에서 설정 된 XBAP(XAML
                         // 브라우저 응용 프로그램)합니다.
                         Commons.LOGGER.Error("AddStore.xaml.cs 창고정보 저장오류 발생");
-                        ((MetroWindow)(Application.Current.MainWindow)).ShowMessageAsync("창고 생성 실패", "창고 생성에 문제가 발생했습니다. 관리자에게 문의 바랍니다.",
+                        ((MetroWindow)(Application.Current.MainWindow)).ShowMessageAsync("창고 수정 실패", "창고 생성에 문제가 발생했습니다. 관리자에게 문의 바랍니다.",
                MessageDialogStyle.Affirmative, null);
                     }
                     // 수정 됨
                     else
                     {
-                       ((MetroWindow)(Application.Current.MainWindow)).ShowMessageAsync("창고 생성 성공", "창고 생성 완료.",
+                       ((MetroWindow)(Application.Current.MainWindow)).ShowMessageAsync("창고 수정 성공", "창고 수정 완료.",
               MessageDialogStyle.Affirmative, null);
                         NavigationService.Navigate(new StoreList());
                     }

@@ -120,7 +120,7 @@
                 x:Name="GrdData" Grid.Row="1"
                 AutoGenerateColumns="False"
                 SelectionUnit="FullRow"
-                GridLinesVisibility="Vertical"
+                GridLinesVisibility="Vertical" IsReadOnly="true"
                 Style="{StaticResource MahApps.Styles.DataGrid.Azure}"
                 ItemsSource="{Binding}">
                 <!-- AutoGenerateColumns : 열이 자동으로 생성 되는지 여부를 나타내는 값을 가져오거나 설정 합니다. -->
